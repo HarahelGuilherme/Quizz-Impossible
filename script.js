@@ -1,66 +1,104 @@
-const database = {
-    "Ciência": [
-        { q: "Qual o nome do planeta de Endfield?", options: ["Terra", "Talos-II", "Arca-III"], correct: "Talos-II" },
-        { q: "(PEGADINHA) Quem é o protagonista?", options: ["Doutor", "Endfield Administrador", "Amiya"], correct: "Endfield Administrador" },
-        { q: "Objetivo da Endfield Industries?", options: ["Churrasco", "Recuperar tecnologias", "Destruir robôs"], correct: "Recuperar tecnologias" }
-    ],
-    "Mecânicas": [
-        { q: "Como o jogador transporta energia?", options: ["Cavalos", "Tirolesas e Pylons", "Teleporte"], correct: "Tirolesas e Pylons" },
-        { q: "Diferença de combate no Endfield?", options: ["Tower Defense", "Action RPG em tempo real", "Cartas"], correct: "Action RPG em tempo real" }
-    ]
+const gameData = {
+    pt: {
+        ui: {
+            play: "JOGAR", instr: "INSTRUÇÕES", cred: "CRÉDITOS", conf: "CONFIGURAÇÕES", exit: "FECHAR GAME",
+            back: "VOLTAR", next: "PRÓXIMO", score: "SCORE", theme: "TEMA", err: "ERROU! De volta ao início."
+        },
+        questions: {
+            "Ciência": [
+                { q: "Qual o nome do planeta de Endfield?", options: ["Terra", "Talos-II", "Arca-III"], correct: "Talos-II" },
+                { q: "(PEGADINHA) Quem é o protagonista?", options: ["Doutor", "Endfield Administrador", "Amiya"], correct: "Endfield Administrador" },
+                { q: "Principal objetivo da Endfield?", options: ["Churrasco", "Recuperar tecnologias", "Destruir robôs"], correct: "Recuperar tecnologias" }
+            ],
+            "Mecânicas": [
+                { q: "Como transporta energia?", options: ["Cavalos", "Tirolesas e Pylons", "Magia"], correct: "Tirolesas e Pylons" },
+                { q: "O que é o sistema AIC?", options: ["Vilão", "Refresco", "Automação da Base"], correct: "Automação da Base" }
+            ]
+        }
+    },
+    en: {
+        ui: {
+            play: "PLAY", instr: "INSTRUCTIONS", cred: "CREDITS", conf: "SETTINGS", exit: "EXIT GAME",
+            back: "BACK", next: "NEXT", score: "SCORE", theme: "THEME", err: "WRONG! Back to start."
+        },
+        questions: {
+            "Ciência": [
+                { q: "What is Endfield's planet name?", options: ["Earth", "Talos-II", "Ark-III"], correct: "Talos-II" },
+                { q: "(TRICK) Who is the protagonist?", options: ["Doctor", "Endfield Administrator", "Amiya"], correct: "Endfield Administrator" }
+            ]
+        }
+    }
 };
 
+let currentLang = 'pt';
 let currentTheme = "Ciência";
 let usedThemes = [];
-let questions = [];
+let shuffledQuestions = [];
 let qIndex = 0;
 let score = 0;
 
 function showScreen(id) {
     document.querySelectorAll('.screen').forEach(s => s.style.display = 'none');
-    const target = document.getElementById(id);
-    if (target) target.style.display = 'flex';
+    document.getElementById(id).style.display = 'flex';
+}
+
+function toggleLanguage() {
+    currentLang = currentLang === 'pt' ? 'en' : 'pt';
+    const ui = gameData[currentLang].ui;
+    document.getElementById('btn-play').innerText = ui.play;
+    document.getElementById('btn-instr').innerText = ui.instr;
+    document.getElementById('btn-cred').innerText = ui.cred;
+    document.getElementById('btn-conf').innerText = ui.conf;
+    document.getElementById('btn-exit').innerText = ui.exit;
+    document.getElementById('btn-lang-toggle').innerText = currentLang === 'pt' ? 'Português' : 'English';
+}
+
+function updateVolume(val) {
+    console.log("Volume set to:", val);
+    // Lógica para ajustar áudio futuramente
 }
 
 function startGame() {
     score = 0;
-    usedThemes = ["Ciência"]; // Começa sempre com Ciência[cite: 1]
-    setupTheme("Ciência");
+    usedThemes = ["Ciência"];
+    loadTheme("Ciência");
     showScreen('quiz');
 }
 
-function setupTheme(theme) {
+function loadTheme(theme) {
     currentTheme = theme;
-    // Embaralha as perguntas do tema para não ficar padrão[cite: 1]
-    questions = [...database[theme]].sort(() => Math.random() - 0.5);
+    // Mistura as perguntas para não seguir padrão
+    shuffledQuestions = [...gameData[currentLang].questions[theme]].sort(() => Math.random() - 0.5);
     qIndex = 0;
     renderQuestion();
 }
 
 function renderQuestion() {
-    const data = questions[qIndex];
-    document.getElementById('question-text').innerText = data.q;
-    document.getElementById('current-theme-display').innerText = `TEMA: ${currentTheme.toUpperCase()}`;
-    document.getElementById('score-display').innerText = `SCORE: ${score}`;
+    const q = shuffledQuestions[qIndex];
+    const ui = gameData[currentLang].ui;
+    
+    document.getElementById('question-text').innerText = q.q;
+    document.getElementById('current-theme-display').innerText = `${ui.theme}: ${currentTheme.toUpperCase()}`;
+    document.getElementById('score-display').innerText = `${ui.score}: ${score}`;
 
     const container = document.getElementById('options-container');
     container.innerHTML = "";
 
-    // Embaralha as opções de resposta[cite: 1]
-    let opts = [...data.options].sort(() => Math.random() - 0.5);
+    // Mistura as respostas
+    let opts = [...q.options].sort(() => Math.random() - 0.5);
 
     opts.forEach(opt => {
         const btn = document.createElement('button');
         btn.className = "btn-sub";
         btn.innerText = opt;
         btn.onclick = () => {
-            if(opt === data.correct) {
+            if(opt === q.correct) {
                 score++;
                 qIndex++;
-                if(qIndex < questions.length) renderQuestion();
+                if(qIndex < shuffledQuestions.length) renderQuestion();
                 else nextTheme();
             } else {
-                alert("ERRADO! Você volta ao início."); // Regra de erro[cite: 1]
+                alert(ui.err); // Volta para o início ao errar[cite: 1]
                 showScreen('menu');
             }
         };
@@ -69,20 +107,17 @@ function renderQuestion() {
 }
 
 function nextTheme() {
-    const available = Object.keys(database).filter(t => !usedThemes.includes(t));
+    const available = Object.keys(gameData[currentLang].questions).filter(t => !usedThemes.includes(t));
     if(available.length > 0) {
         const next = available[Math.floor(Math.random() * available.length)];
         usedThemes.push(next);
-        setupTheme(next);
+        loadTheme(next);
     } else {
-        alert("INCREDÍVEL! VOCÊ É UM GÊNIO!");
+        alert("GENIAL! Você completou todos os temas!");
         showScreen('menu');
     }
 }
 
 function closeGame() {
-    if(confirm("Deseja sair?")) {
-        window.close();
-        alert("Feche a aba para sair!");
-    }
+    if(confirm("Deseja fechar o jogo?")) window.close();
 }

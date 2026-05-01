@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gênio Impossible</title>
+    <title>Gênio Impossible - Harahel</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -12,66 +12,70 @@
         <div id="menu" class="screen">
             <h1 class="glow-text">Gênio <br><span class="highlight">Impossible</span></h1>
             <div class="menu-buttons">
-                <button onclick="startGame()" class="btn-main">JOGAR</button>
-                <button onclick="showScreen('instructions-1')" class="btn-sub">INSTRUÇÕES</button>
-                <button onclick="showScreen('credits')" class="btn-sub">CRÉDITOS</button>
-                <button onclick="showScreen('config')" class="btn-sub">CONFIGURAÇÕES</button>
-                <button onclick="closeGame()" class="btn-exit">FECHAR GAME</button>
+                <button onclick="startGame()" class="btn-main" id="btn-play">JOGAR</button>
+                <button onclick="showScreen('instructions-1')" class="btn-sub" id="btn-instr">INSTRUÇÕES</button>
+                <button onclick="showScreen('credits')" class="btn-sub" id="btn-cred">CRÉDITOS</button>
+                <button onclick="showScreen('config')" class="btn-sub" id="btn-conf">CONFIGURAÇÕES</button>
+                <button onclick="closeGame()" class="btn-exit" id="btn-exit">FECHAR GAME</button>
             </div>
             <p class="footer-tag">Criado por: Harahel</p>
         </div>
 
-        <!-- INSTRUÇÕES - PARTE 1 -->
+        <!-- INSTRUÇÕES PARTE 1 -->
         <div id="instructions-1" class="screen" style="display:none;">
-            <h2 class="highlight">Bem-vindo! 🎉</h2>
-            <p class="desc">Um jogo de quiz extremamente troll, com pegadinhas absurdas e perguntas que vão te fazer gritar “Isso é ridículo!”.</p>
-            <p class="desc">Você não escolhe o tema. O jogo decide por você.[cite: 1]</p>
+            <h2 class="highlight" id="instr-title-1">Bem-vindo! 🎉</h2>
+            <p class="desc" id="instr-p1">Um jogo de quiz extremamente troll, com pegadinhas absurdas e perguntas que vão te fazer gritar “Isso é ridículo!”.</p>
             <div class="nav-btns">
-                <button onclick="showScreen('menu')" class="btn-back">VOLTAR</button>
+                <button onclick="showScreen('menu')" class="btn-back">MENU</button>
                 <button onclick="showScreen('instructions-2')" class="btn-next">PRÓXIMO</button>
             </div>
         </div>
 
-        <!-- INSTRUÇÕES - PARTE 2 (REGRAS) -->
+        <!-- INSTRUÇÕES PARTE 2 (REGRAS) -->
         <div id="instructions-2" class="screen" style="display:none;">
-            <h2 class="title-tab">Regras Importantes</h2>
+            <h2 class="title-tab" id="instr-title-2">Regras Importantes</h2>
             <div class="table-container">
-                <div class="table-row header"><div>Item</div><div>Como funciona</div></div>
-                <div class="table-row"><div>Início</div><div>Sempre começa com <b>Ciência</b>[cite: 1]</div></div>
-                <div class="table-row"><div>Erro</div><div>Jogo acaba + volta pro início[cite: 1]</div></div>
-                <div class="table-row"><div>Temas</div><div>Nunca repete o anterior[cite: 1]</div></div>
-                <div class="table-row"><div>Pegadinhas</div><div>Muitas e pesadas[cite: 1]</div></div>
+                <div class="table-row header"><div id="t-item">Item</div><div id="t-func">Como funciona</div></div>
+                <div class="table-row"><div>Início</div><div id="r-start">Sempre começa com Ciência</div></div>
+                <div class="table-row"><div>Erro</div><div id="r-error">Jogo acaba + volta pro início</div></div>
+                <div class="table-row"><div>Temas</div><div id="r-themes">Nunca repete o anterior</div></div>
             </div>
             <div class="nav-btns">
-                <button onclick="showScreen('instructions-1')" class="btn-back">ANTERIOR</button>
+                <button onclick="showScreen('instructions-1')" class="btn-back">VOLTAR</button>
                 <button onclick="showScreen('menu')" class="btn-main">MENU</button>
             </div>
         </div>
 
         <!-- CONFIGURAÇÕES -->
         <div id="config" class="screen" style="display:none;">
-            <h2>Configurações</h2>
-            <button class="btn-sub">MUDAR LINGUAGEM</button>
-            <button class="btn-sub">MUDAR VOLUME</button>
-            <button onclick="showScreen('menu')" class="btn-back">VOLTAR AO MENU</button>
-        </div>
-
-        <!-- CRÉDITOS -->
-        <div id="credits" class="screen" style="display:none;">
-            <h2>Créditos</h2>
-            <p>Desenvolvedor: <b>Harahel</b>[cite: 1]</p>
-            <p>Feito com muito café e vontade de trollar.[cite: 1]</p>
+            <h2 id="conf-title">Configurações</h2>
+            <div class="config-group">
+                <label id="label-lang">Linguagem:</label>
+                <button onclick="toggleLanguage()" class="btn-sub" id="btn-lang-toggle">Português</button>
+            </div>
+            <div class="config-group">
+                <label id="label-vol">Volume Música:</label>
+                <input type="range" min="0" max="100" value="50" class="slider" oninput="updateVolume(this.value)">
+            </div>
             <button onclick="showScreen('menu')" class="btn-back">VOLTAR</button>
         </div>
 
-        <!-- TELA DE JOGO -->
+        <!-- TELA DE CRÉDITOS -->
+        <div id="credits" class="screen" style="display:none;">
+            <h2 id="cred-title">Créditos</h2>
+            <p>Criador e Desenvolvedor: <b>Harahel</b></p>
+            <p id="cred-p1">Feito com muito café e paciência.</p>
+            <button onclick="showScreen('menu')" class="btn-back">VOLTAR</button>
+        </div>
+
+        <!-- TELA DE QUIZ -->
         <div id="quiz" class="screen" style="display:none;">
             <div class="status-bar">
-                <span id="current-theme-display">TEMA: CIÊNCIA</span>
+                <span id="current-theme-display">CIÊNCIA</span>
                 <span id="score-display">SCORE: 0</span>
             </div>
             <div class="question-box">
-                <h2 id="question-text">Pergunta?</h2>
+                <h2 id="question-text">Carregando...</h2>
             </div>
             <div id="options-container"></div>
         </div>
