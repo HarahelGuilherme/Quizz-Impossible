@@ -8,70 +8,31 @@
 </head>
 <body>
     <div id="game-container">
-        <!-- MENU PRINCIPAL -->
+        <!-- TELA: MENU -->
         <div id="menu" class="screen">
             <h1 class="glow-text">Gênio <br><span class="highlight">Impossible</span></h1>
             <div class="menu-buttons">
-                <button onclick="startGame()" class="btn-main" id="btn-play">JOGAR</button>
-                <button onclick="showScreen('instructions-1')" class="btn-sub" id="btn-instr">INSTRUÇÕES</button>
-                <button onclick="showScreen('credits')" class="btn-sub" id="btn-cred">CRÉDITOS</button>
-                <button onclick="showScreen('config')" class="btn-sub" id="btn-conf">CONFIGURAÇÕES</button>
-                <button onclick="closeGame()" class="btn-exit" id="btn-exit">FECHAR GAME</button>
+                <button onclick="startGame()" class="btn-main">JOGAR</button>
+                <button onclick="showScreen('config')" class="btn-sub">CONFIGURAÇÕES</button>
+                <button onclick="window.close()" class="btn-exit">FECHAR GAME</button>
             </div>
             <p class="footer-tag">Criado por: Harahel</p>
         </div>
 
-        <!-- INSTRUÇÕES PARTE 1 -->
-        <div id="instructions-1" class="screen" style="display:none;">
-            <h2 class="highlight">Bem-vindo! 🎉</h2>
-            <p class="desc">Um jogo de quiz extremamente troll, com pegadinhas absurdas.</p>
-            <div class="nav-btns">
-                <button onclick="showScreen('menu')" class="btn-back">MENU</button>
-                <button onclick="showScreen('instructions-2')" class="btn-next">PRÓXIMO</button>
-            </div>
-        </div>
-
-        <!-- INSTRUÇÕES PARTE 2 (REGRAS) -->
-        <div id="instructions-2" class="screen" style="display:none;">
-            <h2 class="title-tab">Regras Importantes</h2>
-            <div class="table-container">
-                <div class="table-row header"><div>Item</div><div>Como funciona</div></div>
-                <div class="table-row"><div>Início</div><div>Sempre começa com Ciência[cite: 1]</div></div>
-                <div class="table-row"><div>Erro</div><div>Jogo acaba + volta pro início[cite: 1]</div></div>
-                <div class="table-row"><div>Temas</div><div>Nunca repete o anterior[cite: 1]</div></div>
-            </div>
-            <div class="nav-btns">
-                <button onclick="showScreen('instructions-1')" class="btn-back">VOLTAR</button>
-                <button onclick="showScreen('menu')" class="btn-main">MENU</button>
-            </div>
-        </div>
-
-        <!-- CONFIGURAÇÕES -->
+        <!-- TELA: CONFIGURAÇÕES -->
         <div id="config" class="screen" style="display:none;">
             <h2>Configurações</h2>
             <div class="config-group">
-                <label>Linguagem:</label>
-                <button onclick="toggleLanguage()" class="btn-sub" id="btn-lang-toggle">Português</button>
-            </div>
-            <div class="config-group">
-                <label>Volume Música:</label>
+                <label>Volume dos Efeitos:</label>
                 <input type="range" min="0" max="100" value="50" class="slider" oninput="updateVolume(this.value)">
             </div>
-            <button onclick="showScreen('menu')" class="btn-back">VOLTAR</button>
+            <button onclick="showScreen('menu')" class="btn-main">VOLTAR</button>
         </div>
 
-        <!-- TELA DE CRÉDITOS -->
-        <div id="credits" class="screen" style="display:none;">
-            <h2>Créditos</h2>
-            <p>Criador: <b>Harahel</b>[cite: 1]</p>
-            <p>Programado em HTML, CSS e JS[cite: 1]</p>
-            <button onclick="showScreen('menu')" class="btn-back">VOLTAR</button>
-        </div>
-
-        <!-- TELA DE QUIZ -->
+        <!-- TELA: QUIZ -->
         <div id="quiz" class="screen" style="display:none;">
             <div class="status-bar">
-                <span id="current-theme-display">TEMA: CIÊNCIA</span>
+                <span id="theme-display">TEMA: CIÊNCIA</span>
                 <span id="score-display">SCORE: 0</span>
             </div>
             <div class="question-box">
