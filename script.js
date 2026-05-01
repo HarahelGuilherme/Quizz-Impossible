@@ -17,16 +17,8 @@ const gameData = {
         }
     },
     en: {
-        ui: {
-            play: "PLAY", instr: "INSTRUCTIONS", cred: "CREDITS", conf: "SETTINGS", exit: "EXIT GAME",
-            back: "BACK", next: "NEXT", score: "SCORE", theme: "THEME", err: "WRONG! Back to start."
-        },
-        questions: {
-            "Ciência": [
-                { q: "What is Endfield's planet name?", options: ["Earth", "Talos-II", "Ark-III"], correct: "Talos-II" },
-                { q: "(TRICK) Who is the protagonist?", options: ["Doctor", "Endfield Administrator", "Amiya"], correct: "Endfield Administrator" }
-            ]
-        }
+        ui: { play: "PLAY", instr: "INSTRUCTIONS", cred: "CREDITS", conf: "SETTINGS", exit: "EXIT", back: "BACK", next: "NEXT", score: "SCORE", theme: "THEME", err: "WRONG! Resetting." },
+        questions: { "Ciência": [ { q: "Planet name?", options: ["Earth", "Talos-II", "Ark-III"], correct: "Talos-II" } ] }
     }
 };
 
@@ -36,6 +28,37 @@ let usedThemes = [];
 let shuffledQuestions = [];
 let qIndex = 0;
 let score = 0;
+let gameVolume = 0.5;
+
+// MOTOR DE ÁUDIO SINTETIZADO (Sem arquivos externos)
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+function playSynthSound(type) {
+    const oscillator = audioCtx.createOscillator();
+    const gainNode = audioCtx.createGain();
+
+    oscillator.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+    gainNode.gain.value = gameVolume;
+
+    if (type === 'success') { // Som de Moeda (Agudo e rápido)
+        oscillator.type = 'square';
+        oscillator.frequency.setValueAtTime(880, audioCtx.currentTime);
+        oscillator.frequency.exponentialRampToValueAtTime(1320, audioCtx.currentTime + 0.1);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+        oscillator.start();
+        oscillator.stop(audioCtx.currentTime + 0.3);
+    } else { // Som de Erro Variado (Grave e dissonante)
+        const freqs = [110, 150, 90]; // Frequências para sons diferentes
+        const randomFreq = freqs[Math.floor(Math.random() * freqs.length)];
+        oscillator.type = 'sawtooth';
+        oscillator.frequency.setValueAtTime(randomFreq, audioCtx.currentTime);
+        oscillator.frequency.linearRampToValueAtTime(40, audioCtx.currentTime + 0.4);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+        oscillator.start();
+        oscillator.stop(audioCtx.currentTime + 0.5);
+    }
+}
 
 function showScreen(id) {
     document.querySelectorAll('.screen').forEach(s => s.style.display = 'none');
@@ -47,18 +70,16 @@ function toggleLanguage() {
     const ui = gameData[currentLang].ui;
     document.getElementById('btn-play').innerText = ui.play;
     document.getElementById('btn-instr').innerText = ui.instr;
-    document.getElementById('btn-cred').innerText = ui.cred;
-    document.getElementById('btn-conf').innerText = ui.conf;
-    document.getElementById('btn-exit').innerText = ui.exit;
     document.getElementById('btn-lang-toggle').innerText = currentLang === 'pt' ? 'Português' : 'English';
 }
 
 function updateVolume(val) {
-    console.log("Volume set to:", val);
-    // Lógica para ajustar áudio futuramente
+    gameVolume = val / 100;
+    playSynthSound('success'); // Feedback visual/sonoro do volume
 }
 
 function startGame() {
+    if (audioCtx.state === 'suspended') audioCtx.resume();
     score = 0;
     usedThemes = ["Ciência"];
     loadTheme("Ciência");
@@ -67,7 +88,6 @@ function startGame() {
 
 function loadTheme(theme) {
     currentTheme = theme;
-    // Mistura as perguntas para não seguir padrão
     shuffledQuestions = [...gameData[currentLang].questions[theme]].sort(() => Math.random() - 0.5);
     qIndex = 0;
     renderQuestion();
@@ -76,7 +96,6 @@ function loadTheme(theme) {
 function renderQuestion() {
     const q = shuffledQuestions[qIndex];
     const ui = gameData[currentLang].ui;
-    
     document.getElementById('question-text').innerText = q.q;
     document.getElementById('current-theme-display').innerText = `${ui.theme}: ${currentTheme.toUpperCase()}`;
     document.getElementById('score-display').innerText = `${ui.score}: ${score}`;
@@ -84,8 +103,7 @@ function renderQuestion() {
     const container = document.getElementById('options-container');
     container.innerHTML = "";
 
-    // Mistura as respostas
-    let opts = [...q.options].sort(() => Math.random() - 0.5);
+    let opts = [...q.options].sort(() => Math.random() - 0.5); // Mistura as respostas
 
     opts.forEach(opt => {
         const btn = document.createElement('button');
@@ -93,12 +111,14 @@ function renderQuestion() {
         btn.innerText = opt;
         btn.onclick = () => {
             if(opt === q.correct) {
+                playSynthSound('success'); // Som de acerto sintetizado
                 score++;
                 qIndex++;
                 if(qIndex < shuffledQuestions.length) renderQuestion();
                 else nextTheme();
             } else {
-                alert(ui.err); // Volta para o início ao errar[cite: 1]
+                playSynthSound('error'); // Som de erro sintetizado
+                alert(ui.err); // Volta ao menu conforme regra[cite: 1]
                 showScreen('menu');
             }
         };
@@ -113,11 +133,9 @@ function nextTheme() {
         usedThemes.push(next);
         loadTheme(next);
     } else {
-        alert("GENIAL! Você completou todos os temas!");
+        alert("GENIAL! Você completou tudo!");
         showScreen('menu');
     }
 }
 
-function closeGame() {
-    if(confirm("Deseja fechar o jogo?")) window.close();
-}
+function closeGame() { if(confirm("Sair?")) window.close(); }
