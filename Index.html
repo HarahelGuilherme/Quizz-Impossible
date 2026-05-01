@@ -8,42 +8,47 @@
 </head>
 <body>
     <div id="game-container">
-        <!-- Menu Inicial -->
+        <!-- Menu Principal Estilizado -->
         <div id="menu" class="screen">
-            <h1>Gênio Impossible</h1>
-            <p>Criado por: Harahel</p>
-            <button onclick="startGame()">Jogar</button>
-            <button onclick="showScreen('credits')">Créditos</button>
-            <button onclick="showScreen('instructions')">Instruções</button>
+            <h1 class="glow-text">Gênio <br><span class="highlight">Impossible</span></h1>
+            <div class="menu-buttons">
+                <button onclick="startGame()" class="btn-main">JOGAR</button>
+                <button onclick="showScreen('instructions')" class="btn-sub">INSTRUÇÕES</button>
+                <button onclick="showScreen('credits')" class="btn-sub">CRÉDITOS</button>
+                <button class="btn-sub">CONFIGURAÇÕES</button>
+            </div>
+            <p class="footer-tag">Criado por: Harahel</p>
         </div>
 
-        <!-- Tela de Jogo -->
+        <!-- Tela de Jogo (Quiz) -->
         <div id="quiz" class="screen" style="display:none;">
-            <div id="header-info">
-                <span id="current-theme">Tema: Ciência</span>
-                <span id="score">Acertos: 0</span>
+            <div class="status-bar">
+                <span id="current-theme">CIÊNCIA</span>
+                <span id="score">SCORE: 0</span>
             </div>
-            <h2 id="question-text">Pergunta aqui?</h2>
+            <div class="question-box">
+                <h2 id="question-text">Pergunta?</h2>
+            </div>
             <div id="options-container"></div>
         </div>
 
-        <!-- Instruções -->
+        <!-- Instruções com Estilo de Tabela (Igual ao Anexo) -->
         <div id="instructions" class="screen" style="display:none;">
-            <h2>Como Jogar</h2>
-            <ul>
-                <li>Sempre começa com <b>Ciência</b>.</li>
-                <li>Se errar, volta para o início.</li>
-                <li>Ao reiniciar, o tema muda automaticamente.</li>
-            </ul>
-            <button onclick="showScreen('menu')">Voltar</button>
+            <h2 class="title-tab">Regras Importantes</h2>
+            <div class="table-container">
+                <div class="table-row header"><div>Item</div><div>Como funciona</div></div>
+                <div class="table-row"><div>Início</div><div>Sempre começa com <b>Ciência</b></div></div>
+                <div class="table-row"><div>Erro</div><div>Jogo acaba + volta pro início</div></div>
+                <div class="table-row"><div>Temas</div><div>Nunca repete o anterior</div></div>
+            </div>
+            <button onclick="showScreen('menu')" class="btn-back">VOLTAR</button>
         </div>
 
-        <!-- Créditos -->
-        <div id="credits" class="screen" style="display:none;">
-            <h2>Créditos</h2>
-            <p>Criador: Harahel[cite: 1]</p>
-            <p>Mais de 200 perguntas criadas manualmente[cite: 1].</p>
-            <button onclick="showScreen('menu')">Voltar</button>
+        <!-- Tela de Erro (Game Over) -->
+        <div id="gameover" class="screen" style="display:none;">
+            <h1 class="error-text">GAME OVER</h1>
+            <p>Você falhou na missão.</p>
+            <button onclick="showScreen('menu')" class="btn-main">REINICIAR</button>
         </div>
     </div>
     <script src="script.js"></script>
