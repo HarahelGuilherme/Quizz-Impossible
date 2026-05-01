@@ -8,47 +8,72 @@
 </head>
 <body>
     <div id="game-container">
-        <!-- Menu Principal Estilizado -->
+        <!-- MENU PRINCIPAL -->
         <div id="menu" class="screen">
             <h1 class="glow-text">Gênio <br><span class="highlight">Impossible</span></h1>
             <div class="menu-buttons">
                 <button onclick="startGame()" class="btn-main">JOGAR</button>
-                <button onclick="showScreen('instructions')" class="btn-sub">INSTRUÇÕES</button>
+                <button onclick="showScreen('instructions-1')" class="btn-sub">INSTRUÇÕES</button>
                 <button onclick="showScreen('credits')" class="btn-sub">CRÉDITOS</button>
-                <button class="btn-sub">CONFIGURAÇÕES</button>
+                <button onclick="showScreen('config')" class="btn-sub">CONFIGURAÇÕES</button>
+                <button onclick="closeGame()" class="btn-exit">FECHAR GAME</button>
             </div>
             <p class="footer-tag">Criado por: Harahel</p>
         </div>
 
-        <!-- Tela de Jogo (Quiz) -->
+        <!-- INSTRUÇÕES - PARTE 1 -->
+        <div id="instructions-1" class="screen" style="display:none;">
+            <h2 class="highlight">Bem-vindo! 🎉</h2>
+            <p class="desc">Um jogo de quiz extremamente troll, com pegadinhas absurdas e perguntas que vão te fazer gritar “Isso é ridículo!”.</p>
+            <p class="desc">Você não escolhe o tema. O jogo decide por você.[cite: 1]</p>
+            <div class="nav-btns">
+                <button onclick="showScreen('menu')" class="btn-back">VOLTAR</button>
+                <button onclick="showScreen('instructions-2')" class="btn-next">PRÓXIMO</button>
+            </div>
+        </div>
+
+        <!-- INSTRUÇÕES - PARTE 2 (REGRAS) -->
+        <div id="instructions-2" class="screen" style="display:none;">
+            <h2 class="title-tab">Regras Importantes</h2>
+            <div class="table-container">
+                <div class="table-row header"><div>Item</div><div>Como funciona</div></div>
+                <div class="table-row"><div>Início</div><div>Sempre começa com <b>Ciência</b>[cite: 1]</div></div>
+                <div class="table-row"><div>Erro</div><div>Jogo acaba + volta pro início[cite: 1]</div></div>
+                <div class="table-row"><div>Temas</div><div>Nunca repete o anterior[cite: 1]</div></div>
+                <div class="table-row"><div>Pegadinhas</div><div>Muitas e pesadas[cite: 1]</div></div>
+            </div>
+            <div class="nav-btns">
+                <button onclick="showScreen('instructions-1')" class="btn-back">ANTERIOR</button>
+                <button onclick="showScreen('menu')" class="btn-main">MENU</button>
+            </div>
+        </div>
+
+        <!-- CONFIGURAÇÕES -->
+        <div id="config" class="screen" style="display:none;">
+            <h2>Configurações</h2>
+            <button class="btn-sub">MUDAR LINGUAGEM</button>
+            <button class="btn-sub">MUDAR VOLUME</button>
+            <button onclick="showScreen('menu')" class="btn-back">VOLTAR AO MENU</button>
+        </div>
+
+        <!-- CRÉDITOS -->
+        <div id="credits" class="screen" style="display:none;">
+            <h2>Créditos</h2>
+            <p>Desenvolvedor: <b>Harahel</b>[cite: 1]</p>
+            <p>Feito com muito café e vontade de trollar.[cite: 1]</p>
+            <button onclick="showScreen('menu')" class="btn-back">VOLTAR</button>
+        </div>
+
+        <!-- TELA DE JOGO -->
         <div id="quiz" class="screen" style="display:none;">
             <div class="status-bar">
-                <span id="current-theme">CIÊNCIA</span>
-                <span id="score">SCORE: 0</span>
+                <span id="current-theme-display">TEMA: CIÊNCIA</span>
+                <span id="score-display">SCORE: 0</span>
             </div>
             <div class="question-box">
                 <h2 id="question-text">Pergunta?</h2>
             </div>
             <div id="options-container"></div>
-        </div>
-
-        <!-- Instruções com Estilo de Tabela (Igual ao Anexo) -->
-        <div id="instructions" class="screen" style="display:none;">
-            <h2 class="title-tab">Regras Importantes</h2>
-            <div class="table-container">
-                <div class="table-row header"><div>Item</div><div>Como funciona</div></div>
-                <div class="table-row"><div>Início</div><div>Sempre começa com <b>Ciência</b></div></div>
-                <div class="table-row"><div>Erro</div><div>Jogo acaba + volta pro início</div></div>
-                <div class="table-row"><div>Temas</div><div>Nunca repete o anterior</div></div>
-            </div>
-            <button onclick="showScreen('menu')" class="btn-back">VOLTAR</button>
-        </div>
-
-        <!-- Tela de Erro (Game Over) -->
-        <div id="gameover" class="screen" style="display:none;">
-            <h1 class="error-text">GAME OVER</h1>
-            <p>Você falhou na missão.</p>
-            <button onclick="showScreen('menu')" class="btn-main">REINICIAR</button>
         </div>
     </div>
     <script src="script.js"></script>

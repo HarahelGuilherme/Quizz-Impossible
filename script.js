@@ -1,83 +1,88 @@
-const questionsData = {
+const database = {
     "Ciência": [
         { q: "Qual o nome do planeta de Endfield?", options: ["Terra", "Talos-II", "Arca-III"], correct: "Talos-II" },
-        { q: "(PEGADINHA) Quem é o protagonista que o jogador controla?", options: ["Doutor", "Endfield Administrador", "Amiya"], correct: "Endfield Administrador" },
-        { q: "Qual o principal objetivo da Endfield?", options: ["Destruir robôs", "Fazer churrasco", "Recuperar tecnologias"], correct: "Recuperar tecnologias" }
+        { q: "(PEGADINHA) Quem é o protagonista?", options: ["Doutor", "Endfield Administrador", "Amiya"], correct: "Endfield Administrador" },
+        { q: "Objetivo da Endfield Industries?", options: ["Churrasco", "Recuperar tecnologias", "Destruir robôs"], correct: "Recuperar tecnologias" }
     ],
     "Mecânicas": [
-        { q: "Como o jogador transporta energia?", options: ["Cavalos", "Tirolesas e Pylons", "Magia"], correct: "Tirolesas e Pylons" },
-        { q: "O que o sistema 'AIC' faz?", options: ["Vilão do jogo", "Marca de refri", "Automação da base"], correct: "Automação da base" }
+        { q: "Como o jogador transporta energia?", options: ["Cavalos", "Tirolesas e Pylons", "Teleporte"], correct: "Tirolesas e Pylons" },
+        { q: "Diferença de combate no Endfield?", options: ["Tower Defense", "Action RPG em tempo real", "Cartas"], correct: "Action RPG em tempo real" }
     ]
 };
 
 let currentTheme = "Ciência";
 let usedThemes = [];
-let shuffledQuestions = [];
-let currentQuestionIndex = 0;
+let questions = [];
+let qIndex = 0;
 let score = 0;
 
 function showScreen(id) {
     document.querySelectorAll('.screen').forEach(s => s.style.display = 'none');
-    document.getElementById(id).style.display = 'flex';
+    const target = document.getElementById(id);
+    if (target) target.style.display = 'flex';
 }
 
 function startGame() {
     score = 0;
-    currentTheme = "Ciência";
-    usedThemes = ["Ciência"];
-    prepareTheme(currentTheme);
+    usedThemes = ["Ciência"]; // Começa sempre com Ciência[cite: 1]
+    setupTheme("Ciência");
     showScreen('quiz');
 }
 
-function prepareTheme(theme) {
-    // Embaralha a ordem das perguntas do tema
-    shuffledQuestions = [...questionsData[theme]].sort(() => Math.random() - 0.5);
-    currentQuestionIndex = 0;
-    loadQuestion();
+function setupTheme(theme) {
+    currentTheme = theme;
+    // Embaralha as perguntas do tema para não ficar padrão[cite: 1]
+    questions = [...database[theme]].sort(() => Math.random() - 0.5);
+    qIndex = 0;
+    renderQuestion();
 }
 
-function loadQuestion() {
-    const q = shuffledQuestions[currentQuestionIndex];
-    document.getElementById('question-text').innerText = q.q;
-    document.getElementById('current-theme').innerText = currentTheme.toUpperCase();
-    document.getElementById('score').innerText = `SCORE: ${score}`;
+function renderQuestion() {
+    const data = questions[qIndex];
+    document.getElementById('question-text').innerText = data.q;
+    document.getElementById('current-theme-display').innerText = `TEMA: ${currentTheme.toUpperCase()}`;
+    document.getElementById('score-display').innerText = `SCORE: ${score}`;
 
     const container = document.getElementById('options-container');
     container.innerHTML = "";
 
-    // Embaralha as opções de resposta
-    let options = [...q.options].sort(() => Math.random() - 0.5);
+    // Embaralha as opções de resposta[cite: 1]
+    let opts = [...data.options].sort(() => Math.random() - 0.5);
 
-    options.forEach(opt => {
+    opts.forEach(opt => {
         const btn = document.createElement('button');
         btn.className = "btn-sub";
         btn.innerText = opt;
         btn.onclick = () => {
-            if(opt === q.correct) {
+            if(opt === data.correct) {
                 score++;
-                nextStep();
+                qIndex++;
+                if(qIndex < questions.length) renderQuestion();
+                else nextTheme();
             } else {
-                showScreen('gameover');
+                alert("ERRADO! Você volta ao início."); // Regra de erro[cite: 1]
+                showScreen('menu');
             }
         };
         container.appendChild(btn);
     });
 }
 
-function nextStep() {
-    currentQuestionIndex++;
-    if (currentQuestionIndex < shuffledQuestions.length) {
-        loadQuestion();
+function nextTheme() {
+    const available = Object.keys(database).filter(t => !usedThemes.includes(t));
+    if(available.length > 0) {
+        const next = available[Math.floor(Math.random() * available.length)];
+        usedThemes.push(next);
+        setupTheme(next);
     } else {
-        // Muda para um novo tema se o atual acabar
-        const availableThemes = Object.keys(questionsData).filter(t => !usedThemes.includes(t));
-        if (availableThemes.length > 0) {
-            currentTheme = availableThemes[Math.floor(Math.random() * availableThemes.length)];
-            usedThemes.push(currentTheme);
-            prepareTheme(currentTheme);
-        } else {
-            alert("VOCÊ É UM GÊNIO! Zerou todos os temas!");
-            showScreen('menu');
-        }
+        alert("INCREDÍVEL! VOCÊ É UM GÊNIO!");
+        showScreen('menu');
+    }
+}
+
+function closeGame() {
+    if(confirm("Deseja sair?")) {
+        window.close();
+        alert("Feche a aba para sair!");
     }
 }
