@@ -1,72 +1,90 @@
-let currentTheme = "Ciência"; // Você pode mudar o tema aqui
+let currentTheme = "Ciência"; 
 let currentQuestionIndex = 0;
 let score = 0;
 let playerName = "";
+let isAnswering = false; // Bloqueia cliques múltiplos
 
-// Função para mudar de tela
 function showScreen(screenId) {
     document.querySelectorAll('.screen').forEach(s => s.style.display = 'none');
     document.getElementById(screenId).style.display = 'flex';
 }
 
-// Iniciar Jogo
 function startGame() {
     const nameInput = document.getElementById('player-name').value;
     if (!nameInput.trim()) {
-        alert("Digite seu nome para continuar!");
+        alert("Digite seu nome!"); 
         return;
     }
     playerName = nameInput;
     score = 0;
     currentQuestionIndex = 0;
+    isAnswering = false;
     updateScoreUI();
     showScreen('quiz');
     loadQuestion();
 }
 
-// Carregar Pergunta com Embaralhamento
 function loadQuestion() {
-    const questionData = database[currentTheme][currentQuestionIndex];
+    const questions = database[currentTheme];
+    const questionData = questions[currentQuestionIndex];
     const container = document.getElementById('options-container');
+    
+    // Atualiza Barra de Progresso
+    const progress = (currentQuestionIndex / questions.length) * 100;
+    document.getElementById('progress-bar').style.width = `${progress}%`;
+
     container.innerHTML = '';
     document.getElementById('question-text').innerText = questionData.q;
     document.getElementById('theme-display').innerText = `TEMA: ${currentTheme.toUpperCase()}`;
 
-    // Preparar e Embaralhar opções
     let options = questionData.opts.map((text, index) => ({
         text: text,
         isCorrect: index === questionData.ans
     }));
 
-    options = options.sort(() => Math.random() - 0.5); // Shuffle simples
+    options = options.sort(() => Math.random() - 0.5);
 
     options.forEach(opt => {
         const btn = document.createElement('button');
         btn.className = 'btn-sub';
         btn.innerText = opt.text;
-        btn.onclick = () => handleAnswer(opt.isCorrect);
+        btn.onclick = (e) => handleAnswer(opt.isCorrect, e.target);
         container.appendChild(btn);
     });
 }
 
-function handleAnswer(isCorrect) {
+function handleAnswer(isCorrect, btnElement) {
+    if (isAnswering) return;
+    isAnswering = true;
+
     if (isCorrect) {
+        btnElement.classList.add('correct-answer');
         score += 10;
         updateScoreUI();
-        currentQuestionIndex++;
-        if (currentQuestionIndex < database[currentTheme].length) {
-            loadQuestion();
-        } else {
-            finishGame("VOCÊ VENCEU O TEMA!");
-        }
+
+        setTimeout(() => {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < database[currentTheme].length) {
+                isAnswering = false;
+                loadQuestion();
+            } else {
+                document.getElementById('progress-bar').style.width = `100%`;
+                finishGame("VOCÊ É UM GÊNIO!");
+            }
+        }, 600); // Meio segundo de brilho verde
     } else {
-        finishGame("GAME OVER!");
+        btnElement.classList.add('wrong-answer');
+        
+        setTimeout(() => {
+            finishGame("NÃO FOI DESSA VEZ...");
+        }, 800); // Tempo para o jogador ver a tremedeira vermelha
     }
 }
 
 function finishGame(msg) {
-    alert(`${msg} Pontos: ${score}`);
     saveScore();
+    // Aqui você pode criar uma tela de "Fim de Jogo" mais bonita depois
+    alert(`${msg} \nPontuação final: ${score}`);
     showScreen('menu');
 }
 
@@ -74,7 +92,7 @@ function updateScoreUI() {
     document.getElementById('score-display').innerText = `SCORE: ${score}`;
 }
 
-// SISTEMA DE RANKING
+// RANKING (Local Storage)
 function saveScore() {
     let ranking = JSON.parse(localStorage.getItem('genioRanking')) || [];
     ranking.push({ name: playerName, points: score });
@@ -85,7 +103,7 @@ function saveScore() {
 function showRanking() {
     const list = document.getElementById('ranking-list');
     const ranking = JSON.parse(localStorage.getItem('genioRanking')) || [];
-    list.innerHTML = ranking.length ? "" : "<p>Nenhum recorde ainda.</p>";
+    list.innerHTML = ranking.length ? "" : "<p>Nenhum recorde.</p>";
     
     ranking.forEach((entry, i) => {
         list.innerHTML += `
@@ -96,5 +114,3 @@ function showRanking() {
     });
     showScreen('ranking');
 }
-
-function updateVolume(v) { console.log("Volume: " + v); }
