@@ -1,162 +1,103 @@
 :root {
-    /* Paleta de Cores Neon/Dark */
-    --bg-gradient: radial-gradient(circle at center, #1a1a2e 0%, #080808 100%);
-    --card-bg: rgba(20, 20, 20, 0.95);
-    --red-neon: #ff0055;
-    --green-neon: #00ffaa;
-    --blue-neon: #00d4ff;
-    --border-color: rgba(255, 255, 255, 0.1);
-    --text-glow: 0 0 10px rgba(255, 255, 255, 0.2);
+    --bg: #050505;
+    --card: #111111;
+    --red: #ff3b3b;
+    --green: #00ff88;
+    --blue: #0077ff;
+    --border: rgba(255, 255, 255, 0.1);
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
-
 body {
-    background: var(--bg-gradient);
-    color: #e0e0e0;
-    font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+    background-color: var(--bg);
+    background-image: radial-gradient(circle at top right, #1a1a2e, transparent);
+    color: white;
+    font-family: 'Segoe UI', system-ui, sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    overflow: hidden;
+    margin: 0;
 }
 
-#game-container { width: 95%; max-width: 440px; perspective: 1000px; }
+#game-container { width: 95%; max-width: 500px; }
 
 .screen {
-    background: var(--card-bg);
-    backdrop-filter: blur(15px); /* Efeito de vidro */
-    padding: 40px 30px;
-    border-radius: 32px;
-    border: 1px solid var(--border-color);
+    background: var(--card);
+    padding: 40px 25px;
+    border-radius: 30px;
+    border: 1px solid var(--border);
     display: flex;
     flex-direction: column;
     gap: 25px;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5),
-                inset 0 1px 1px rgba(255, 255, 255, 0.05);
+    box-shadow: 0 30px 60px rgba(0,0,0,0.6);
     text-align: center;
-    animation: slideIn 0.5s cubic-bezier(0.17, 0.67, 0.83, 0.67);
 }
 
-@keyframes slideIn {
-    from { opacity: 0; transform: translateY(30px) rotateX(-10deg); }
-    to { opacity: 1; transform: translateY(0) rotateX(0); }
-}
+/* Título */
+.glow-text { font-size: 2.5rem; font-weight: 800; line-height: 1; text-transform: uppercase; }
+.highlight { color: var(--red); text-shadow: 0 0 15px rgba(255, 59, 59, 0.5); }
 
-/* Título Impactante */
-.glow-text { 
-    font-size: 3rem; 
-    font-weight: 900;
-    letter-spacing: -2px;
-    text-transform: uppercase;
-    color: #fff;
-    line-height: 0.85;
-}
-
-.highlight { 
-    color: var(--red-neon); 
-    text-shadow: 0 0 20px rgba(255, 0, 85, 0.6);
-    display: block;
-}
-
-/* Inputs Modernos */
-.input-style {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 18px;
-    border-radius: 16px;
-    color: #fff;
-    font-size: 1.1rem;
-    text-align: center;
-    transition: 0.3s;
-}
-
-.input-style:focus {
-    border-color: var(--blue-neon);
-    background: rgba(255, 255, 255, 0.07);
-    box-shadow: 0 0 15px rgba(0, 212, 255, 0.2);
-    outline: none;
-}
-
-/* Barra de Progresso Futurista */
-.progress-container {
+/* GRID DE OPÇÕES - Aqui os botões ficam lado a lado */
+#options-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Cria duas colunas iguais */
+    gap: 15px; /* Espaço entre os botões */
     width: 100%;
-    height: 4px;
-    background: rgba(255,255,255,0.05);
-    border-radius: 10px;
-    margin-bottom: 5px;
 }
 
-#progress-bar {
-    height: 100%;
-    background: linear-gradient(90deg, var(--blue-neon), var(--green-neon));
-    box-shadow: 0 0 10px var(--blue-neon);
-    border-radius: 10px;
-}
-
-/* Botões Estilo Jogo */
-button {
-    padding: 18px;
-    border-radius: 18px;
-    border: none;
-    font-weight: 800;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-/* Botão JOGAR (Principal) */
-.btn-main {
-    background: #fff;
-    color: #000;
-    box-shadow: 0 4px 15px rgba(255,255,255,0.2);
-}
-
-.btn-main:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(255,255,255,0.4);
-}
-
-/* Botões de Resposta */
-.btn-sub, #options-container button {
-    background: rgba(255, 255, 255, 0.05);
-    color: #fff;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-#options-container button:hover {
-    background: rgba(0, 255, 170, 0.1);
-    border-color: var(--green-neon);
-    color: var(--green-neon);
-    transform: scale(1.02);
-}
-
-/* Feedback de Erro e Acerto */
-.correct-answer { background: var(--green-neon) !important; color: #000 !important; }
-.wrong-answer { 
-    background: var(--red-neon) !important; 
-    color: #fff !important;
-    animation: shake 0.4s;
-}
-
-@keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-10px); }
-    75% { transform: translateX(10px); }
-}
-
-/* Ranking Items */
-.ranking-item {
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,255,255,0.05);
-    padding: 15px;
-    border-radius: 16px;
+/* Ajuste para botões de menu (que continuam um sob o outro) */
+.menu-buttons {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* Botões Estilizados */
+button {
+    padding: 20px 15px;
+    border-radius: 18px;
+    border: 1px solid var(--border);
+    background: #1a1a1a;
+    color: white;
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    justify-content: center;
     align-items: center;
 }
 
-.footer-tag { color: rgba(255,255,255,0.2); font-size: 0.7rem; }
+button:hover {
+    background: #252525;
+    border-color: var(--blue);
+    transform: translateY(-2px);
+}
+
+.btn-main { background: white; color: black; border: none; width: 100%; }
+.btn-main:hover { background: #eee; border-color: transparent; }
+
+/* Barra de Progresso */
+.progress-container {
+    width: 100%; height: 6px; background: #222; border-radius: 10px; overflow: hidden;
+}
+#progress-bar {
+    height: 100%; width: 0%; background: var(--green); box-shadow: 0 0 10px var(--green);
+    transition: width 0.4s ease;
+}
+
+/* Feedback de Resposta */
+.correct-answer { background: var(--green) !important; color: black !important; border: none; }
+.wrong-answer { background: var(--red) !important; animation: shake 0.4s; border: none; }
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+/* Input */
+.input-style {
+    background: #1a1a1a; border: 1px solid var(--border); padding: 18px;
+    border-radius: 15px; color: white; text-align: center; font-size: 1.1rem;
+}
