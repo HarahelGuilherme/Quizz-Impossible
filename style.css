@@ -12,92 +12,67 @@ body {
     background-image: radial-gradient(circle at top right, #1a1a2e, transparent);
     color: white;
     font-family: 'Segoe UI', system-ui, sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    margin: 0;
+    display: flex; justify-content: center; align-items: center;
+    min-height: 100vh; margin: 0; overflow: hidden;
 }
 
-#game-container { width: 95%; max-width: 500px; }
+#game-container { width: 95%; max-width: 480px; }
 
 .screen {
     background: var(--card);
-    padding: 40px 25px;
+    padding: 35px 25px;
     border-radius: 30px;
     border: 1px solid var(--border);
-    display: flex;
-    flex-direction: column;
-    gap: 25px;
+    display: flex; flex-direction: column; gap: 20px;
     box-shadow: 0 30px 60px rgba(0,0,0,0.6);
     text-align: center;
+    animation: fadeIn 0.4s ease;
 }
 
-/* Título */
-.glow-text { font-size: 2.5rem; font-weight: 800; line-height: 1; text-transform: uppercase; }
-.highlight { color: var(--red); text-shadow: 0 0 15px rgba(255, 59, 59, 0.5); }
+@keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
 
-/* GRID DE OPÇÕES - Aqui os botões ficam lado a lado */
+.glow-text { font-size: 2.5rem; font-weight: 800; line-height: 0.9; text-transform: uppercase; }
+.highlight { color: var(--red); text-shadow: 0 0 15px rgba(255, 59, 59, 0.4); }
+
+/* GRID DE RESPOSTAS */
 #options-container {
     display: grid;
-    grid-template-columns: 1fr 1fr; /* Cria duas colunas iguais */
-    gap: 15px; /* Espaço entre os botões */
-    width: 100%;
-}
-
-/* Ajuste para botões de menu (que continuam um sob o outro) */
-.menu-buttons {
-    display: flex;
-    flex-direction: column;
+    grid-template-columns: 1fr 1fr;
     gap: 12px;
 }
 
-/* Botões Estilizados */
+/* Botões Estilo Game */
 button {
-    padding: 20px 15px;
-    border-radius: 18px;
+    padding: 18px 10px;
+    border-radius: 15px;
     border: 1px solid var(--border);
     background: #1a1a1a;
     color: white;
     font-weight: 700;
-    font-size: 0.95rem;
     cursor: pointer;
-    transition: all 0.2s ease;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    transition: 0.2s;
 }
 
-button:hover {
-    background: #252525;
-    border-color: var(--blue);
-    transform: translateY(-2px);
-}
+button:hover { border-color: var(--blue); transform: translateY(-2px); }
 
-.btn-main { background: white; color: black; border: none; width: 100%; }
-.btn-main:hover { background: #eee; border-color: transparent; }
+.btn-main { background: white; color: black; width: 100%; border: none; }
+.menu-buttons { display: flex; flex-direction: column; gap: 10px; }
+
+/* Hitbox Mobile Ajustada */
+@media (max-width: 600px) {
+    button { padding: 22px 10px; font-size: 1rem; touch-action: manipulation; }
+    #options-container { gap: 10px; }
+}
 
 /* Barra de Progresso */
-.progress-container {
-    width: 100%; height: 6px; background: #222; border-radius: 10px; overflow: hidden;
-}
-#progress-bar {
-    height: 100%; width: 0%; background: var(--green); box-shadow: 0 0 10px var(--green);
-    transition: width 0.4s ease;
-}
+.progress-container { width: 100%; height: 6px; background: #222; border-radius: 10px; overflow: hidden; }
+#progress-bar { height: 100%; width: 0%; background: var(--green); transition: width 0.4s; }
 
-/* Feedback de Resposta */
-.correct-answer { background: var(--green) !important; color: black !important; border: none; }
-.wrong-answer { background: var(--red) !important; animation: shake 0.4s; border: none; }
+/* Feedback */
+.correct-answer { background: var(--green) !important; color: black !important; }
+.wrong-answer { background: var(--red) !important; animation: shake 0.4s; }
 
-@keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-5px); }
-    75% { transform: translateX(5px); }
-}
+@keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
 
-/* Input */
-.input-style {
-    background: #1a1a1a; border: 1px solid var(--border); padding: 18px;
-    border-radius: 15px; color: white; text-align: center; font-size: 1.1rem;
-}
+.ranking-item { display: flex; justify-content: space-between; padding: 12px; background: #1a1a1a; margin-bottom: 8px; border-radius: 10px; }
+.input-style { background: #1a1a1a; border: 1px solid var(--border); padding: 15px; border-radius: 12px; color: white; text-align: center; }
