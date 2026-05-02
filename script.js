@@ -1,84 +1,100 @@
-let currentTheme = "Ciência";
+let currentTheme = "Ciência"; // Você pode mudar o tema aqui
 let currentQuestionIndex = 0;
 let score = 0;
-let volume = 50;
+let playerName = "";
 
-// Função para iniciar o jogo
-function startGame() {
-    score = 0;
-    currentQuestionIndex = 0;
-    updateScore();
-    showScreen('quiz');
-    loadQuestion();
-}
-
-// Troca de telas (Menu, Config, Quiz)
+// Função para mudar de tela
 function showScreen(screenId) {
     document.querySelectorAll('.screen').forEach(s => s.style.display = 'none');
     document.getElementById(screenId).style.display = 'flex';
 }
 
-// Função para embaralhar Arrays (Fisher-Yates)
-function shuffle(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
+// Iniciar Jogo
+function startGame() {
+    const nameInput = document.getElementById('player-name').value;
+    if (!nameInput.trim()) {
+        alert("Digite seu nome para continuar!");
+        return;
     }
-    return array;
+    playerName = nameInput;
+    score = 0;
+    currentQuestionIndex = 0;
+    updateScoreUI();
+    showScreen('quiz');
+    loadQuestion();
 }
 
-// Carrega a pergunta atual na tela
+// Carregar Pergunta com Embaralhamento
 function loadQuestion() {
     const questionData = database[currentTheme][currentQuestionIndex];
     const container = document.getElementById('options-container');
-    const textElement = document.getElementById('question-text');
-    
-    container.innerHTML = ''; // Limpa botões anteriores
-    textElement.innerText = questionData.q;
+    container.innerHTML = '';
+    document.getElementById('question-text').innerText = questionData.q;
     document.getElementById('theme-display').innerText = `TEMA: ${currentTheme.toUpperCase()}`;
 
-    // Mapeia as opções para saber qual é a correta antes de embaralhar
+    // Preparar e Embaralhar opções
     let options = questionData.opts.map((text, index) => ({
         text: text,
-        correct: index === questionData.ans
+        isCorrect: index === questionData.ans
     }));
 
-    // EMBARALHA as opções para elas mudarem de lugar
-    shuffle(options);
+    options = options.sort(() => Math.random() - 0.5); // Shuffle simples
 
-    // Cria os botões centralizados
     options.forEach(opt => {
         const btn = document.createElement('button');
+        btn.className = 'btn-sub';
         btn.innerText = opt.text;
-        btn.onclick = () => checkAnswer(opt.correct);
+        btn.onclick = () => handleAnswer(opt.isCorrect);
         container.appendChild(btn);
     });
 }
 
-function checkAnswer(isCorrect) {
+function handleAnswer(isCorrect) {
     if (isCorrect) {
         score += 10;
-        updateScore();
+        updateScoreUI();
         currentQuestionIndex++;
-        
         if (currentQuestionIndex < database[currentTheme].length) {
             loadQuestion();
         } else {
-            alert("Parabéns! Você venceu este tema!");
-            showScreen('menu');
+            finishGame("VOCÊ VENCEU O TEMA!");
         }
     } else {
-        alert("ERROU! Voltando ao início...");
-        showScreen('menu');
+        finishGame("GAME OVER!");
     }
 }
 
-function updateScore() {
+function finishGame(msg) {
+    alert(`${msg} Pontos: ${score}`);
+    saveScore();
+    showScreen('menu');
+}
+
+function updateScoreUI() {
     document.getElementById('score-display').innerText = `SCORE: ${score}`;
 }
 
-function updateVolume(val) {
-    volume = val;
-    console.log(`Volume ajustado para: ${volume}`);
-    // Aqui você pode aplicar o volume nos seus elementos de áudio futuramente
+// SISTEMA DE RANKING
+function saveScore() {
+    let ranking = JSON.parse(localStorage.getItem('genioRanking')) || [];
+    ranking.push({ name: playerName, points: score });
+    ranking.sort((a, b) => b.points - a.points);
+    localStorage.setItem('genioRanking', JSON.stringify(ranking.slice(0, 5)));
 }
+
+function showRanking() {
+    const list = document.getElementById('ranking-list');
+    const ranking = JSON.parse(localStorage.getItem('genioRanking')) || [];
+    list.innerHTML = ranking.length ? "" : "<p>Nenhum recorde ainda.</p>";
+    
+    ranking.forEach((entry, i) => {
+        list.innerHTML += `
+            <div class="ranking-item">
+                <span>${i + 1}º ${entry.name}</span>
+                <span style="color:var(--green)">${entry.points} pts</span>
+            </div>`;
+    });
+    showScreen('ranking');
+}
+
+function updateVolume(v) { console.log("Volume: " + v); }
