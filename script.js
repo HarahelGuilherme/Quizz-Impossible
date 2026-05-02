@@ -1,5 +1,5 @@
 // CONFIGURAÇÃO DOS TEMAS (Adicione os nomes dos seus 22 temas aqui na ordem desejada)
-const themesOrder = ["Ciência", "Geografia", "História"]; 
+const themesOrder = ["Ciência", "Geografia", "Matemática", "História", "Robótica", "Quimica", "Física", "Lingua Portuguesa", "Anime: One Piece", "Anime: Dragon Ball", "Anime: Bleach", "Anime: Code Geass", "Anime: Overlord", "Anime: Konosuba", "Anime: Tate no Yūsha no Nariagari", "Anime: Re:Zero", "Anime: Pokémon", "Anime: Black Clover", "Anime: That Time I Got Reincarnated as a Slime", "Anime: Oshi No Ko", "Anime: SPYxFamily", "Anime: Demon Slayer", "Genshin Impact - Venti (Barbatos) - O Bardo Alcoólatra", "Genshin Impact - Zhongli (Morax) - O Consultor Falido", "Genshin Impact - Raiden Shogun (Beelzebul) - A Ditadora da Eternidade", "Genshin Impact - Nahida (Buer) - A Lua de Sumeru", "Genshin Impact - Furina (Focalors) - A Estrela de Fontaine", "Genshin Impact - Colombina (Damselette) - A 3ª dos Fatui", "Genshin Impact - Noelle (The Maid of Favonius Logic)", "League Of Legends", "Arknights: Endfield"]; 
 let themeIndex = 0;
 let currentTheme = themesOrder[0];
 let currentQuestionIndex = 0;
